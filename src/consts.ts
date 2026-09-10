@@ -1,5 +1,5 @@
 export const SITE = {
-  url: 'https://shpvk.pages.dev',
+  url: 'https://resume.shpvkcontact.workers.dev',
 
   author: 'Yehor Holotov',
   themeColor: '#f6f8fc',

@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://shpvk.pages.dev/sitemap-index.xml
+Sitemap: https://resume.shpvkcontact.workers.dev/sitemap-index.xml

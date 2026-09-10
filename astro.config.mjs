@@ -3,7 +3,7 @@ import react from '@astrojs/react';
 import sitemap from '@astrojs/sitemap';
 import tailwindcss from '@tailwindcss/vite';
 
-const SITE = 'https://shpvk.pages.dev';
+const SITE = 'https://resume.shpvkcontact.workers.dev';
 
 export default defineConfig({
   site: SITE,
