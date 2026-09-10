@@ -1,0 +1,33 @@
+---
+import { getProfile } from '~/data/profile';
+import { getLocaleFromUrl } from '~/i18n/utils';
+
+const locale = getLocaleFromUrl(Astro.url);
+const profile = getProfile(locale);
+---
+
+<div class="grid gap-12 lg:grid-cols-[1.5fr_1fr] lg:gap-20">
+  <div class="space-y-6" data-reveal data-reveal-stagger="90">
+    {profile.about.map((paragraph, i) => {
+      let textClass: string;
+      if (i === 0) {
+        textClass = 'text-lg text-ink sm:text-xl';
+      } else {
+        textClass = 'text-muted';
+      }
+      return <p class:list={['max-w-2xl leading-relaxed', textClass]}>{paragraph}</p>;
+    })}
+  </div>
+
+  <dl
+    class="grid grid-cols-2 gap-px overflow-hidden rounded-[1.25rem] border border-line bg-line"
+    data-reveal
+  >
+    {profile.facts.map((fact) => (
+      <div class="bg-surface p-5">
+        <dt class="eyebrow">{fact.label}</dt>
+        <dd class="mt-2 text-sm font-medium text-ink">{fact.value}</dd>
+      </div>
+    ))}
+  </dl>
+</div>

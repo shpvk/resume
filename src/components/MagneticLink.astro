@@ -1,0 +1,96 @@
+---
+import Icon from '~/components/Icon.astro';
+import type { IconName } from '~/components/icons';
+
+interface Props {
+  href: string;
+  label: string;
+  variant?: 'solid' | 'ghost';
+  external?: boolean;
+  download?: boolean;
+  icon?: IconName;
+
+  strength?: number;
+  class?: string;
+}
+
+const {
+  href,
+  label,
+  variant = 'solid',
+  external = false,
+  download = false,
+  icon,
+  strength = 10,
+  class: className,
+} = Astro.props;
+
+let styles: string;
+if (variant === 'solid') {
+  styles = 'bg-accent text-canvas hover:bg-accent-strong';
+} else {
+  styles = 'bg-subtle text-ink hover:bg-accent-soft hover:text-accent';
+}
+let target: '_blank' | undefined;
+let rel: string | undefined;
+if (external) {
+  target = '_blank';
+  rel = 'noreferrer noopener';
+} else {
+  target = undefined;
+  rel = undefined;
+}
+---
+
+<a
+  href={href}
+  data-magnetic={strength}
+  download={download || undefined}
+  target={target}
+  rel={rel}
+  class:list={[
+    'magnetic group relative inline-flex items-center gap-2 overflow-hidden rounded-full px-6 py-3 font-mono text-sm',
+    styles,
+    className,
+  ]}
+>
+  {variant === 'solid' && (
+    <span
+      aria-hidden="true"
+      class="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/30 to-transparent transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:translate-x-full"
+    />
+  )}
+
+  <span class="magnetic-label relative flex items-center gap-2">
+    {label}
+    {icon && <Icon name={icon} class="h-3.5 w-3.5" />}
+  </span>
+</a>
+
+<style>
+  .magnetic {
+    transform: translate3d(var(--tx, 0px), var(--ty, 0px), 0);
+    transition:
+      transform 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+      background-color 0.25s ease,
+      border-color 0.25s ease,
+      color 0.25s ease;
+  }
+
+  .magnetic-label {
+    transform: translate3d(var(--lx, 0px), var(--ly, 0px), 0);
+    transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .magnetic:active {
+    transform: translate3d(var(--tx, 0px), var(--ty, 0px), 0) scale(0.97);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .magnetic,
+    .magnetic-label {
+      transform: none;
+      transition: none;
+    }
+  }
+</style>

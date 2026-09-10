@@ -1,0 +1,36 @@
+---
+import { filledIcons, iconPaths, type IconName } from '~/components/icons';
+
+interface Props {
+  name: IconName;
+  class?: string;
+}
+
+const { name, class: className = 'h-4 w-4' } = Astro.props;
+let fill: string;
+let stroke: string | undefined;
+let strokeWidth: number | undefined;
+if (filledIcons.has(name)) {
+  fill = 'currentColor';
+  stroke = undefined;
+  strokeWidth = undefined;
+} else {
+  fill = 'none';
+  stroke = 'currentColor';
+  strokeWidth = 1.5;
+}
+---
+
+<svg
+  viewBox="0 0 16 16"
+  class={className}
+  fill={fill}
+  stroke={stroke}
+  stroke-width={strokeWidth}
+  stroke-linecap="round"
+  stroke-linejoin="round"
+  aria-hidden="true"
+  focusable="false"
+>
+  <path d={iconPaths[name]}></path>
+</svg>

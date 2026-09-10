@@ -1,0 +1,23 @@
+---
+import Base from '~/layouts/Base.astro';
+import { useTranslations } from '~/i18n/utils';
+
+const t = useTranslations('en');
+---
+
+<Base title={`404 - ${t('404.title')}`} indexable={false}>
+  <section class="flex min-h-[80svh] items-center">
+    <div class="shell">
+      <p class="eyebrow">404</p>
+      <h1 class="display text-section mt-4">{t('404.title')}</h1>
+      <p class="mt-4 max-w-md text-muted">{t('404.body')}</p>
+
+      <a
+        href="/"
+        class="mt-8 inline-flex items-center gap-2 rounded-full bg-accent px-5 py-2.5 text-sm text-canvas transition-colors hover:bg-accent-strong"
+      >
+        {t('404.home')}
+      </a>
+    </div>
+  </section>
+</Base>

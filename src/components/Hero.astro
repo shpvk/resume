@@ -1,0 +1,155 @@
+---
+import { getProfile } from '~/data/profile';
+import { getLocaleFromUrl, localizePath, useTranslations } from '~/i18n/utils';
+import MagneticLink from '~/components/MagneticLink.astro';
+
+const locale = getLocaleFromUrl(Astro.url);
+const t = useTranslations(locale);
+const profile = getProfile(locale);
+
+let charIndex = 0;
+const wordChars = profile.name
+  .split(' ')
+  .map((word) => Array.from(word).map((char) => ({ char, i: charIndex++ })));
+
+const primaryStack = ['NestJS', 'TypeScript', 'C#', 'ASP.NET Core', 'PostgreSQL', 'Docker'];
+---
+
+<section
+  class="relative flex items-center overflow-hidden pb-10 pt-28 sm:pb-14 sm:pt-32"
+  aria-labelledby="hero-name"
+>
+  <div class="shell">
+    <p class="hero-fade flex items-center gap-2 text-lg text-muted" style="--hero-delay: 60ms">
+      <span class="wave inline-block text-xl" aria-hidden="true">
+        👋
+      </span>
+      {t('hero.greeting')}
+    </p>
+
+    <h1 id="hero-name" class="display text-display mt-2">
+      {wordChars.map((word, wi) => (
+        <>
+          <span class="inline-block whitespace-nowrap">
+            {word.map(({ char, i }) => (
+              <span class="inline-block overflow-hidden align-bottom">
+                <span class="hero-char inline-block" style={`--char-delay: ${200 + i * 34}ms`}>
+                  {char}
+                </span>
+              </span>
+            ))}
+          </span>
+          {wi < wordChars.length - 1 && ' '}
+        </>
+      ))}
+    </h1>
+
+    <p class="hero-fade mt-6" style="--hero-delay: 520ms">
+      <span class="display inline-block max-w-full rounded-xl bg-accent-soft px-3 py-2 text-xl leading-snug text-ink sm:text-3xl">
+        {profile.role}
+      </span>
+    </p>
+
+    <p
+      class="hero-fade mt-5 max-w-xl text-lg leading-relaxed text-muted"
+      style="--hero-delay: 600ms"
+    >
+      {profile.tagline}
+    </p>
+
+    <div class="hero-fade mt-7" style="--hero-delay: 680ms">
+      <span class="inline-flex items-center gap-2 rounded-xl bg-success/[0.12] px-3 py-1.5 text-sm text-success">
+        <span class="relative flex h-1.5 w-1.5" aria-hidden="true">
+          <span class="absolute inset-0 animate-ping rounded-full bg-success"></span>
+          <span class="relative h-1.5 w-1.5 rounded-full bg-success"></span>
+        </span>
+        {t('hero.available')}
+      </span>
+    </div>
+
+    <ul class="hero-fade mt-6 flex flex-wrap gap-2" style="--hero-delay: 740ms">
+      {primaryStack.map((item) => (
+        <li class="chip">{item}</li>
+      ))}
+    </ul>
+
+    <div class="hero-fade mt-10" style="--hero-delay: 820ms">
+      <MagneticLink
+        href={localizePath('/#contact', locale)}
+        label={t('hero.cta')}
+        variant="solid"
+        icon="arrow-up-right"
+      />
+    </div>
+  </div>
+</section>
+
+<style>
+  .hero-char {
+    animation: char-rise 0.85s cubic-bezier(0.16, 1, 0.3, 1) both;
+    animation-delay: var(--char-delay, 0ms);
+  }
+
+  @keyframes char-rise {
+    from {
+      transform: translateY(105%) rotate(5deg);
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0) rotate(0);
+      opacity: 1;
+    }
+  }
+
+  .hero-fade {
+    animation: hero-fade-up 0.85s cubic-bezier(0.16, 1, 0.3, 1) both;
+    animation-delay: var(--hero-delay, 0ms);
+  }
+
+  @keyframes hero-fade-up {
+    from {
+      transform: translateY(12px);
+      opacity: 0;
+    }
+    to {
+      transform: none;
+      opacity: 1;
+    }
+  }
+
+  .wave {
+    transform-origin: 70% 80%;
+    animation: wave 1.6s ease-in-out 0.5s 2 both;
+  }
+
+  .wave:hover {
+    animation: wave 1.6s ease-in-out 1 both;
+  }
+
+  @keyframes wave {
+    0%,
+    60%,
+    100% {
+      transform: rotate(0deg);
+    }
+    10%,
+    30%,
+    50% {
+      transform: rotate(14deg);
+    }
+    20%,
+    40% {
+      transform: rotate(-8deg);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hero-char,
+    .hero-fade,
+    .wave {
+      animation: none;
+      opacity: 1;
+      transform: none;
+    }
+  }
+</style>

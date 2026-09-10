@@ -1,0 +1,93 @@
+---
+import Icon from '~/components/Icon.astro';
+import type { Project } from '~/data/profile';
+import { getLocaleFromUrl, useTranslations } from '~/i18n/utils';
+
+interface Props {
+  project: Project;
+  class?: string;
+}
+
+const { project, class: className } = Astro.props;
+
+const locale = getLocaleFromUrl(Astro.url);
+const t = useTranslations(locale);
+
+let padding: string;
+let stackMargin: string;
+let footerSpacing: string;
+if (project.compact) {
+  padding = 'p-5 sm:p-6';
+  stackMargin = 'mt-5';
+  footerSpacing = 'mt-5';
+} else {
+  padding = 'p-6 sm:p-7';
+  stackMargin = 'mt-6';
+  footerSpacing = 'mt-auto pt-6';
+}
+---
+
+<article class:list={['card card-glow flex flex-col', padding, className]}>
+  <header class="flex items-start justify-between gap-4">
+    <div>
+      <h3 class="display text-xl text-ink">{project.name}</h3>
+      <p class="mt-1 text-sm text-faint">{project.tagline}</p>
+    </div>
+
+    {project.status && (
+      <span class="shrink-0 rounded-lg bg-accent-soft px-2.5 py-1 font-mono text-[0.7rem] text-accent">
+        {project.status}
+      </span>
+    )}
+  </header>
+
+  <p class="mt-4 text-sm leading-relaxed text-muted">{project.description}</p>
+
+  {project.highlights.length > 0 && (
+    <>
+      <h4 class="eyebrow mt-6">{t('projects.highlights')}</h4>
+      <ul class="mt-3 space-y-2">
+        {project.highlights.map((highlight) => (
+          <li class="flex gap-2.5 text-sm leading-snug text-muted">
+            <span
+              aria-hidden="true"
+              class="mt-[0.45rem] h-1 w-1 shrink-0 rounded-full bg-accent/50"
+            />
+            {highlight}
+          </li>
+        ))}
+      </ul>
+    </>
+  )}
+
+  <ul class:list={['flex flex-wrap gap-1.5', stackMargin]}>
+    {project.stack.map((tech) => (
+      <li class="rounded-lg bg-subtle px-2 py-1 font-mono text-[0.7rem] text-muted">{tech}</li>
+    ))}
+  </ul>
+
+  <footer class:list={['flex flex-wrap gap-5', footerSpacing]}>
+    {project.repo && (
+      <a
+        href={project.repo}
+        target="_blank"
+        rel="noreferrer noopener"
+        class="link-wipe inline-flex items-center gap-2 font-mono text-xs text-muted transition-colors hover:text-accent"
+      >
+        <Icon name="github" class="h-3.5 w-3.5" />
+        {t('projects.viewCode')}
+      </a>
+    )}
+    {project.live && (
+      <a
+        href={project.live}
+        target="_blank"
+        rel="noreferrer noopener"
+        class="link-wipe inline-flex items-center gap-2 font-mono text-xs text-muted transition-colors hover:text-accent"
+      >
+        <Icon name="arrow-up-right" class="h-3.5 w-3.5" />
+        {t('projects.viewLive')}
+      </a>
+    )}
+  </footer>
+</article>

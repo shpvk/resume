@@ -1,0 +1,29 @@
+---
+import ProjectCard from '~/components/ProjectCard.astro';
+import { getProfile } from '~/data/profile';
+import { getLocaleFromUrl } from '~/i18n/utils';
+
+const locale = getLocaleFromUrl(Astro.url);
+const profile = getProfile(locale);
+
+const featured = profile.projects.filter((project) => project.featured);
+// The first regular project holds the left column; the rest stack in the right
+// one, so the column bottoms line up.
+const [lead, ...aside] = profile.projects.filter((project) => !project.featured);
+---
+
+<div class="grid gap-4 md:grid-cols-2" data-reveal data-reveal-stagger="90">
+  {featured.map((project) => (
+    <ProjectCard project={project} class="md:col-span-2" />
+  ))}
+
+  {lead && <ProjectCard project={lead} />}
+
+  {aside.length > 0 && (
+    <div class="flex flex-col gap-4">
+      {aside.map((project, i) => (
+        <ProjectCard project={project} class={i === aside.length - 1 ? 'grow' : undefined} />
+      ))}
+    </div>
+  )}
+</div>

@@ -1,0 +1,171 @@
+---
+import { LOCALES, LOCALE_LABELS, SECTIONS } from '~/consts';
+import { getLocaleFromUrl, localizePath, switchLocalePath, useTranslations } from '~/i18n/utils';
+import Icon from '~/components/Icon.astro';
+
+const locale = getLocaleFromUrl(Astro.url);
+const t = useTranslations(locale);
+
+const navItems = SECTIONS.map((id) => ({
+  id,
+  href: localizePath(`/#${id}`, locale),
+  label: t(`nav.${id}` as `nav.${typeof id}`),
+}));
+---
+
+<header
+  class="fixed inset-x-0 top-0 z-50 border-b border-line/60 bg-canvas/75 backdrop-blur-xl"
+  data-print-hide
+>
+  <div
+    data-progress-bar
+    class="absolute inset-x-0 bottom-0 h-[2px] origin-left scale-x-0 bg-gradient-to-r from-accent-strong to-accent"
+  ></div>
+
+  <nav class="shell flex h-16 items-center justify-between gap-4" aria-label="Main">
+    <a
+      href={localizePath('/', locale)}
+      class="group relative inline-flex flex-col justify-center"
+      aria-label={t('nav.wordmark')}
+    >
+      <span class="display inline-flex items-baseline text-[1.05rem] tracking-tight text-ink">
+        {t('nav.wordmark')}
+      </span>
+      <svg
+        class="squiggle absolute -bottom-1 left-0 h-2 w-full text-accent"
+        viewBox="0 0 100 8"
+        preserveAspectRatio="none"
+        fill="none"
+        aria-hidden="true"
+      >
+        <path
+          d="M1 5.5c8-4 16 4 24 0s16-4 24 0 16 4 24 0 16-4 26 0"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+        ></path>
+      </svg>
+    </a>
+
+    <ul class="hidden items-center gap-7 md:flex">
+      {navItems.map((item) => (
+        <li>
+          <a
+            href={item.href}
+            data-nav-link={item.id}
+            class="link-wipe text-sm text-faint transition-colors hover:text-ink"
+          >
+            {item.label}
+          </a>
+        </li>
+      ))}
+    </ul>
+
+    <div class="flex items-center gap-3">
+      <div
+        class="flex items-center gap-0.5 rounded-xl bg-subtle p-0.5"
+        role="group"
+        aria-label={t('nav.langLabel')}
+      >
+        {LOCALES.map((l) => {
+          const active = l === locale;
+          let current: 'true' | undefined;
+          let languageClass: string;
+          if (active) {
+            current = 'true';
+            languageClass = 'bg-ink text-canvas';
+          } else {
+            current = undefined;
+            languageClass = 'text-faint hover:text-ink';
+          }
+          return (
+            <a
+              href={switchLocalePath(Astro.url, l)}
+              hreflang={LOCALE_LABELS[l].htmlLang}
+              lang={LOCALE_LABELS[l].htmlLang}
+              aria-current={current}
+              title={LOCALE_LABELS[l].full}
+              class:list={[
+                'rounded-[0.6rem] px-2.5 py-1 font-mono text-[0.7rem] transition-colors',
+                languageClass,
+              ]}
+            >
+              {LOCALE_LABELS[l].short}
+            </a>
+          );
+        })}
+      </div>
+
+      <button
+        type="button"
+        id="theme-toggle"
+        class="grid h-9 w-9 place-items-center rounded-xl bg-subtle text-muted transition-colors hover:text-accent"
+        aria-label={t('nav.themeLabel')}
+        title={t('nav.themeLabel')}
+      >
+        <Icon name="sun" class="theme-icon theme-icon-light h-4 w-4" />
+        <Icon name="moon" class="theme-icon theme-icon-dark h-4 w-4" />
+      </button>
+
+      <button
+        type="button"
+        id="menu-toggle"
+        class="grid h-9 w-9 place-items-center rounded-xl bg-subtle text-muted transition-colors hover:text-ink md:hidden"
+        aria-expanded="false"
+        aria-controls="mobile-menu"
+        aria-label={t('nav.menu')}
+      >
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+          <path
+            d="M2 5h12M2 11h12"
+            stroke="currentColor"
+            stroke-width="1.75"
+            stroke-linecap="round"
+          ></path>
+        </svg>
+      </button>
+    </div>
+  </nav>
+
+  <div id="mobile-menu" class="hidden border-t border-line/60 md:hidden">
+    <ul class="shell flex flex-col py-2">
+      {navItems.map((item, i) => (
+        <li>
+          <a
+            href={item.href}
+            class="flex items-center gap-3 border-b border-line/40 py-3.5 text-sm text-muted transition-colors hover:text-ink"
+          >
+            <span class="counter scale-90">{String(i + 1).padStart(2, '0')}</span>
+            {item.label}
+          </a>
+        </li>
+      ))}
+    </ul>
+  </div>
+</header>
+
+<script>
+  const toggle = document.getElementById('menu-toggle');
+  const menu = document.getElementById('mobile-menu');
+
+  function setOpen(open: boolean) {
+    if (!toggle || !menu) return;
+    menu.classList.toggle('hidden', !open);
+    toggle.setAttribute('aria-expanded', String(open));
+  }
+
+  toggle?.addEventListener('click', () => {
+    setOpen(toggle.getAttribute('aria-expanded') !== 'true');
+  });
+
+  menu
+    ?.querySelectorAll('a')
+    .forEach((link) => link.addEventListener('click', () => setOpen(false)));
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') setOpen(false);
+  });
+
+  window.matchMedia('(min-width: 768px)').addEventListener('change', (event) => {
+    if (event.matches) setOpen(false);
+  });
+</script>

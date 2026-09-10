@@ -1,0 +1,44 @@
+---
+import Base from '~/layouts/Base.astro';
+
+import Hero from '~/components/Hero.astro';
+import Section from '~/components/Section.astro';
+import About from '~/components/About.astro';
+import Skills from '~/components/Skills.astro';
+import Experience from '~/components/Experience.astro';
+import Projects from '~/components/Projects.astro';
+import Contact from '~/components/Contact.astro';
+
+import { getLocaleFromUrl, useTranslations } from '~/i18n/utils';
+
+const locale = getLocaleFromUrl(Astro.url);
+const t = useTranslations(locale);
+---
+
+<Base>
+  <Hero />
+
+  <Section id="about" index={t('section.about.index')} title={t('section.about.title')} seamless>
+    <About />
+  </Section>
+
+  <Section id="skills" index={t('section.skills.index')} title={t('section.skills.title')}>
+    <Skills />
+  </Section>
+
+  <Section
+    id="experience"
+    index={t('section.experience.index')}
+    title={t('section.experience.title')}
+  >
+    <Experience />
+  </Section>
+
+  <Section id="projects" index={t('section.projects.index')} title={t('section.projects.title')}>
+    <Projects />
+  </Section>
+
+  <Section id="contact" index={t('section.contact.index')} title={t('section.contact.title')}>
+    <Contact />
+  </Section>
+</Base>

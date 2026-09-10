@@ -1,0 +1,122 @@
+---
+import '~/styles/global.css';
+
+import { LINKS, LOCALE_LABELS, SITE } from '~/consts';
+import { getProfile } from '~/data/profile';
+import { alternateLinks, getLocaleFromUrl, useTranslations } from '~/i18n/utils';
+
+import Nav from '~/components/Nav.astro';
+import Backdrop from '~/components/Backdrop.astro';
+
+interface Props {
+  title?: string;
+  description?: string;
+
+  indexable?: boolean;
+}
+
+const { title, description, indexable = true } = Astro.props;
+
+const locale = getLocaleFromUrl(Astro.url);
+const t = useTranslations(locale);
+const profile = getProfile(locale);
+
+const pageTitle = title ?? `${profile.name} - ${profile.role}`;
+const pageDescription = description ?? t('meta.description');
+const canonical = new URL(Astro.url.pathname, Astro.site ?? Astro.url.origin);
+const ogImage = new URL('/og.png', Astro.site ?? Astro.url.origin);
+const alternates = alternateLinks(Astro.url, Astro.site);
+let ogLocale: string;
+if (locale === 'uk') {
+  ogLocale = 'uk_UA';
+} else {
+  ogLocale = 'en_US';
+}
+
+const personSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: profile.name,
+  jobTitle: profile.role,
+  description: pageDescription,
+  url: canonical.href,
+  email: `mailto:${LINKS.email}`,
+  knowsAbout: profile.skills.flatMap((group) => group.items),
+  sameAs: [LINKS.github, LINKS.linkedin].filter(Boolean),
+};
+---
+
+<!doctype html>
+<html lang={LOCALE_LABELS[locale].htmlLang} class="no-js scroll-smooth" data-locale={locale}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>{pageTitle}</title>
+    <meta name="description" content={pageDescription} />
+    <meta name="author" content={profile.name} />
+
+    <meta id="theme-color-meta" name="theme-color" content={SITE.themeColor} />
+    <meta name="color-scheme" content="light dark" />
+    {!indexable && <meta name="robots" content="noindex, follow" />}
+
+    <link rel="canonical" href={canonical.href} />
+    {alternates.map(({ locale: l, href }) => (
+      <link rel="alternate" hreflang={LOCALE_LABELS[l].htmlLang} href={href} />
+    ))}
+    <link rel="alternate" hreflang="x-default" href={alternates[0]!.href} />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/manifest.webmanifest" />
+
+    <meta property="og:type" content="profile" />
+    <meta property="og:site_name" content={profile.name} />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={pageDescription} />
+    <meta property="og:url" content={canonical.href} />
+    <meta property="og:image" content={ogImage.href} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:locale" content={ogLocale} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={pageTitle} />
+    <meta name="twitter:description" content={pageDescription} />
+    <meta name="twitter:image" content={ogImage.href} />
+
+    <script is:inline type="application/ld+json" set:html={JSON.stringify(personSchema)}></script>
+    <script is:inline>
+      try {
+        var stored = localStorage.getItem('theme');
+        if (stored === 'dark') {
+          document.documentElement.dataset.theme = 'dark';
+        } else {
+          document.documentElement.dataset.theme = 'light';
+        }
+      } catch (e) {
+        document.documentElement.dataset.theme = 'light';
+      }
+    </script>
+  </head>
+
+  <body class="min-h-dvh antialiased">
+    <a
+      href="#main"
+      class="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded-lg focus:bg-accent focus:px-4 focus:py-2 focus:font-mono focus:text-sm focus:text-canvas"
+    >
+      {t('nav.skipToContent')}
+    </a>
+
+    <Backdrop />
+    <Nav />
+
+    <main id="main" class="relative z-10">
+      <slot />
+    </main>
+
+    <script>
+      import '~/scripts/fx';
+    </script>
+  </body>
+</html>

@@ -1,0 +1,30 @@
+---
+import type { SectionId } from '~/consts';
+
+interface Props {
+  id: SectionId;
+
+  index: string;
+  title: string;
+
+  seamless?: boolean;
+}
+
+const { id, index, title, seamless = false } = Astro.props;
+---
+
+<section id={id} class:list={['relative py-12 sm:py-16', !seamless && 'border-t border-line/50']}>
+  <div class="shell">
+    <header class="mb-8 flex items-center gap-4 sm:mb-10" data-reveal>
+      <span class="counter shrink-0">{index}</span>
+      <h2 class="display text-section">{title}</h2>
+
+      <span
+        aria-hidden="true"
+        class="mt-1 h-px flex-1 bg-gradient-to-r from-line-strong to-transparent"
+      ></span>
+    </header>
+
+    <slot />
+  </div>
+</section>

@@ -1,0 +1,70 @@
+---
+import { LINKS } from '~/consts';
+import { getLocaleFromUrl, useTranslations } from '~/i18n/utils';
+import Icon from '~/components/Icon.astro';
+import type { IconName } from '~/components/icons';
+
+const locale = getLocaleFromUrl(Astro.url);
+const t = useTranslations(locale);
+
+const socials: { name: IconName; label: string; href: string }[] = [
+  LINKS.github && { name: 'github' as IconName, label: 'GitHub', href: LINKS.github },
+  LINKS.linkedin && { name: 'linkedin' as IconName, label: 'LinkedIn', href: LINKS.linkedin },
+  LINKS.telegram && { name: 'telegram' as IconName, label: 'Telegram', href: LINKS.telegram },
+].filter(Boolean) as { name: IconName; label: string; href: string }[];
+---
+
+<div class="grid gap-10 lg:grid-cols-[1.2fr_1fr] lg:gap-20">
+  <div data-reveal>
+    <p class="display text-section max-w-xl">
+      {t('contact.heading')}
+      <span class="text-accent">.</span>
+    </p>
+    <p class="mt-5 max-w-lg leading-relaxed text-muted">{t('contact.body')}</p>
+  </div>
+
+  <div class="space-y-3" data-reveal data-reveal-stagger="80">
+    <div class="card flex items-center justify-between gap-4 p-5">
+      <div class="min-w-0">
+        <p class="eyebrow">{t('contact.emailLabel')}</p>
+        <a
+          href={`mailto:${LINKS.email}`}
+          class="link-wipe mt-1 block truncate font-mono text-sm text-ink hover:text-accent"
+        >
+          {LINKS.email}
+        </a>
+      </div>
+
+      <button
+        type="button"
+        data-copy={LINKS.email}
+        data-copied-label={t('contact.copied')}
+        class="inline-flex shrink-0 items-center gap-2 rounded-xl bg-subtle px-3 py-2 font-mono text-xs text-muted transition-colors hover:bg-line hover:text-ink"
+      >
+        <Icon name="copy" class="h-3.5 w-3.5" />
+        <span data-copy-label>{t('contact.copy')}</span>
+      </button>
+    </div>
+
+    {socials.map((social) => (
+      <a
+        href={social.href}
+        target="_blank"
+        rel="noreferrer noopener"
+        class="card group flex items-center justify-between gap-4 p-5"
+      >
+        <span class="flex items-center gap-3">
+          <Icon
+            name={social.name}
+            class="h-4 w-4 text-faint transition-colors group-hover:text-accent"
+          />
+          <span class="font-mono text-sm text-ink">{social.label}</span>
+        </span>
+        <Icon
+          name="arrow-up-right"
+          class="h-4 w-4 text-faint transition-all duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-accent"
+        />
+      </a>
+    ))}
+  </div>
+</div>
