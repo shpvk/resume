@@ -24,7 +24,7 @@ const profile = getProfile(locale);
     data-reveal
   >
     {profile.facts.map((fact) => (
-      <div class="bg-surface p-5">
+      <div class="min-w-0 bg-surface p-3 [overflow-wrap:anywhere] sm:p-5">
         <dt class="eyebrow">{fact.label}</dt>
         <dd class="mt-2 text-sm font-medium text-ink">{fact.value}</dd>
       </div>

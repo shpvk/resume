@@ -9,7 +9,7 @@ const profile = getProfile(locale);
 
 <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3" data-reveal data-reveal-stagger="70">
   {profile.skills.map((group) => (
-    <article class="card card-glow p-6">
+    <article class="card card-glow p-4 sm:p-6">
       <header class="mb-4 flex items-center gap-3">
         <span class="counter scale-90">{group.index}</span>
         <h3 class="display text-base text-ink">{group.title}</h3>

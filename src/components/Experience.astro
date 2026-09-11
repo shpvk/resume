@@ -27,14 +27,14 @@ const groups: { label: string | null; entries: TimelineEntry[] }[] = [
 
         <ol class="relative space-y-4" data-reveal data-reveal-stagger="110">
           {group.entries.map((entry) => (
-            <li class="card group relative p-6 sm:p-7">
+            <li class="card group relative p-4 sm:p-7">
               <span
                 aria-hidden="true"
                 class="absolute left-0 top-6 h-8 w-px origin-top scale-y-0 bg-accent transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-y-100"
               />
 
-              <div class="flex flex-col gap-1 sm:flex-row sm:items-baseline sm:justify-between sm:gap-6">
-                <h4 class="display text-lg text-ink">
+              <div class="flex flex-col gap-2 lg:flex-row lg:items-baseline lg:justify-between lg:gap-6">
+                <h4 class="display min-w-0 text-base leading-relaxed text-ink sm:text-lg">
                   {entry.title}
                   <span class="text-faint"> @ </span>
                   {(() => {
@@ -93,7 +93,7 @@ const groups: { label: string | null; entries: TimelineEntry[] }[] = [
         {t('experience.certificates')}
       </h3>
 
-      <ul class="grid gap-3 sm:grid-cols-2" data-reveal data-reveal-stagger="90">
+      <ul class="grid grid-cols-1 gap-3 sm:grid-cols-2" data-reveal data-reveal-stagger="90">
         {profile.certificates.map((cert) => (
           <li>
             <a
@@ -108,7 +108,7 @@ const groups: { label: string | null; entries: TimelineEntry[] }[] = [
 
               <span class="min-w-0 flex-1">
                 <span class="block font-medium text-ink">{cert.name}</span>
-                <span class="mt-0.5 block truncate text-xs text-faint">
+                <span class="mt-0.5 block text-xs leading-relaxed text-faint">
                   {cert.issuer} · {cert.date}
                 </span>
               </span>

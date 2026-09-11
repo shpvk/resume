@@ -24,12 +24,12 @@ const socials: { name: IconName; label: string; href: string }[] = [
   </div>
 
   <div class="space-y-3" data-reveal data-reveal-stagger="80">
-    <div class="card flex items-center justify-between gap-4 p-5">
+    <div class="card flex flex-col items-start gap-4 p-4 sm:flex-row sm:items-center sm:justify-between sm:p-5">
       <div class="min-w-0">
         <p class="eyebrow">{t('contact.emailLabel')}</p>
         <a
           href={`mailto:${LINKS.email}`}
-          class="link-wipe mt-1 block truncate font-mono text-sm text-ink hover:text-accent"
+          class="link-wipe mt-1 block max-w-full font-mono text-sm text-ink [overflow-wrap:anywhere] hover:text-accent"
         >
           {LINKS.email}
         </a>
@@ -39,7 +39,7 @@ const socials: { name: IconName; label: string; href: string }[] = [
         type="button"
         data-copy={LINKS.email}
         data-copied-label={t('contact.copied')}
-        class="inline-flex shrink-0 items-center gap-2 rounded-xl bg-subtle px-3 py-2 font-mono text-xs text-muted transition-colors hover:bg-line hover:text-ink"
+        class="inline-flex min-h-11 shrink-0 items-center gap-2 rounded-xl bg-subtle px-3 py-2 font-mono text-xs text-muted transition-colors hover:bg-line hover:text-ink"
       >
         <Icon name="copy" class="h-3.5 w-3.5" />
         <span data-copy-label>{t('contact.copy')}</span>
